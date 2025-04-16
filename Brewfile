@@ -56,7 +56,7 @@ brew 'libyaml'
 
 # -- LANGUAGES 
 brew 'java'
-brew 'jenv"'
+brew 'jenv'
 brew 'rbenv'
 brew 'ruby-build'
 brew 'pyenv-virtualenv'
@@ -83,7 +83,7 @@ cask 'firefox'
 cask 'google-chrome'
 cask 'iterm2'
 cask 'keycastr' # Keystroke for screencast
-cask 'logitech-g-hub'
+# cask 'logitech-g-hub'
 cask 'macmediakeyforwarder' # Prevent Music App from lauching. Alternative is notunes
 cask 'notion'
 # brew "ollama" # Easily run LLM models
