@@ -8,9 +8,11 @@
 #	 ░░░░░░ ░░   ░░ ░░       ░░░░░░  ░░░       ░░  ░░░░░░
 #
 
-export ANDROID_HOME=$HOME/Library/Android/sdk
+export ANDROID_HOME=$HOME/Development/Android/sdk
 
 export DOCKER_SCAN_SUGGEST=false
+
+export DISABLE_AUTO_TITLE=true
 
 export EDITOR="vim"
 
@@ -46,6 +48,8 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 export NEXT_TELEMETRY_DISABLED=1
+
+export NVM_LAZY_LOAD=true # https://github.com/lukechilds/zsh-nvm?tab=readme-ov-file#lazy-loading
 
 export PROMPT_EOL_MARK=''
 

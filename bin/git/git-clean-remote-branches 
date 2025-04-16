@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+
+git branch -r --merged | grep -vE 'origin/HEAD|main|develop' | sed 's/origin\///' | xargs -I {} git push origin --delete {}

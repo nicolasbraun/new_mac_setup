@@ -20,18 +20,18 @@ _colors_green=$(tput setaf 2)
 _colors_cyan=$(tput setaf 6)
 _colors_reset=$(tput sgr0)
 
+_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 ###########################################
 #                                         #
-#          Homebrew and apps		  #
+#          Homebrew and apps		      #
 #                                         #
 ###########################################
-
 
 echo "${_colors_bold}Installing Homebrew...${_colors_reset}"
 if test ! $(which brew); then
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
- 	eval "$(/opt/homebrew/bin/brew shellenv)"
+	eval "$(/opt/homebrew/bin/brew shellenv)"
 else
 	echo "Already installed"
 fi
@@ -53,7 +53,6 @@ brew cleanup
 echo "${_colors_bold}Symlinking the dotfiles...${_colors_reset}"
 
 # Get the dotfiles dir in case it's named something else.
-_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 _dotfiles_dir="${_script_dir}/dotfiles"
 
 # Confirm the path.
@@ -144,14 +143,14 @@ read -p "Would you like to create a new SSH key? [y/n]" -n 1 -r
 echo # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]; then
 	ssh-keygen -t rsa
- 	echo "SSH key created."
+	echo "SSH key created."
 	cat ~/.ssh/id_rsa.pub | pbcopy
- 	echo -e "${_colors_bold}${_colors_cyan}Please add this public key to Github${_colors_reset}"
+	echo -e "${_colors_bold}${_colors_cyan}Please add this public key to Github${_colors_reset}"
 	echo -e "https://github.com/account/ssh"
 	read -p "Press [Enter] key to continue"
- else
-  echo "SSH key generation skipped."
-  echo ""
+else
+	echo "SSH key generation skipped."
+	echo ""
 fi
 # Avoid permanent prompt for passphrase
 echo -e "Setting SSH config to avoid permanent prompt for passphrase"
@@ -159,15 +158,15 @@ mkdir -p ~/.ssh
 
 # Check if the line already exists in ~/.ssh/config
 if ! grep -q "^UseKeychain yes" ~/.ssh/config 2>/dev/null; then
-  echo "Adding configuration to ~/.ssh/config..."
-  # Append the configuration to the file
-  {
-    echo "Host *"
-    echo "  UseKeychain yes"
-  } >> ~/.ssh/config
-  echo "Configuration added to ~/.ssh/config."
+	echo "Adding configuration to ~/.ssh/config..."
+	# Append the configuration to the file
+	{
+		echo "Host *"
+		echo "  UseKeychain yes"
+	} >>~/.ssh/config
+	echo "Configuration added to ~/.ssh/config."
 else
-  echo "Configuration already exists in ~/.ssh/config. No changes made."
+	echo "Configuration already exists in ~/.ssh/config. No changes made."
 fi
 
 ###########################################
@@ -265,9 +264,9 @@ defaults write com.apple.finder _FXSortFoldersFirst -bool true
 #"Finder: Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
 defaults write com.apple.finder FXInfoPanesExpanded -dict \
-    General -bool true \
-    OpenWith -bool true \
-    Privileges -bool true
+	General -bool true \
+	OpenWith -bool true \
+	Privileges -bool true
 
 #"Finder: Set Desktop as the default location for new Finder windows
 # For other paths, use `PfLo` and `file:///full/path/here/`
@@ -328,6 +327,25 @@ defaults write com.apple.screencapture location -string "$HOME/Desktop/Screensho
 #"Setting screenshot format to PNG"
 defaults write com.apple.screencapture type -string "png"
 
+killall Finder
+
+echo ""
+read -p "Would you like to remove all Dock persistent icons ? [y/n]" -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+	defaults write com.apple.dock persistent-apps -array
+fi
+killall Dock
+echo "${_colors_bold}Done. You may need to reboot for some to take effect.${_colors_reset}"
+
+###########################################
+#                                         #
+#               APPS STUFF                #
+#                                         #
+###########################################
+
+# -- TRANSMISSION
+
 #"Use `~/Downloads/Incomplete` to store incomplete downloads"
 defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
 defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Downloads/Incomplete"
@@ -344,16 +362,55 @@ defaults write org.m0k.transmission WarningDonate -bool false
 #"Hide the legal disclaimer"
 defaults write org.m0k.transmission WarningLegal -bool false
 
-killall Finder
+# -- ITERM 2
+_iterm_dir="${_script_dir}/iterm2"
+defaults write com.googlecode.iterm2 "PrefsCustomFolder" -string $_iterm_dir
+defaults write com.googlecode.iterm2 "LoadPrefsFromCustomFolder" -bool true
 
-echo ""
-read -p "Would you like to remove all Dock persistent icons ? [y/n]"  -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    defaults write com.apple.dock persistent-apps -array
-fi
-killall Dock
-echo "${_colors_bold}Done. You may need to reboot for some to take effect.${_colors_reset}"
+###########################################
+#                                         #
+#           FILES ASSOCIATIONS            #
+#                                         #
+###########################################
+
+echo "${_colors_bold}Setting up file associations...${_colors_reset}"
+# duti -x pdf to get the current association
+duti -s com.apple.Preview .pdf all
+duti -s com.microsoft.VSCode public.plain-text all
+duti -s com.microsoft.VSCode public.source-code all
+duti -s com.microsoft.VSCode public.data all
+duti -s com.microsoft.VSCode .css all
+duti -s com.microsoft.VSCode .gitattributes all
+duti -s com.microsoft.VSCode .gitignore all
+duti -s com.microsoft.VSCode .htaccess all
+# duti -s com.microsoft.VSCode .html all # Fails for some reason
+duti -s com.microsoft.VSCode .js all
+duti -s com.microsoft.VSCode .json all
+duti -s com.microsoft.VSCode .link all
+duti -s com.microsoft.VSCode .md all
+duti -s com.microsoft.VSCode .mv all
+duti -s com.microsoft.VSCode .mvt all
+duti -s com.microsoft.VSCode .scss all
+duti -s com.microsoft.VSCode .sh all
+duti -s com.microsoft.VSCode .txt all
+duti -s com.microsoft.VSCode .xml all
+duti -s com.microsoft.VSCode .yaml all
+duti -s com.microsoft.VSCode .zsh all
+echo -e "Done.\n"
+
+###########################################
+#                                         #
+#              FIREFOX                    #
+#                                         #
+###########################################
+
+echo "${_colors_bold}Setting up Firefox...${_colors_reset}"
+FF_PROFILES_DIR="$HOME/Library/Application\ Support/Firefox/Profiles"
+
+echo "Launching Firefox to ensure the default profile folder is created"
+open "/Applications/Firefox.app"
+sleep 10
+killall Firefox
 
 ###########################################
 #                                         #
@@ -363,29 +420,40 @@ echo "${_colors_bold}Done. You may need to reboot for some to take effect.${_col
 
 echo "${_colors_bold}There is still some manual stuff to do...${_colors_reset}"
 echo ""
+
 echo "${_colors_bold}In MACOS setting${_colors_reset}"
 echo "	- Keyboard: Change the shortcut to 'Move focus to next window' Alt+tab is a good one"
 echo "	- Keyboard: Disable Spotlight."
-echo "  - Password: Set bitwarden as source"
+echo "  - Password: Set Bitwarden as source"
+echo ""
+
 echo "${_colors_bold}Raycast${_colors_reset}"
 echo "	- Import your backupfile."
+
 echo "${_colors_bold}Firefox${_colors_reset}"
-echo "	- Login"
+echo "	- Replace the default folder with your backup (Usually in $FF_PROFILES_DIR)"
 echo "	- Import Sideberry backup"
+echo "  - In Preference, search PDF and set up to just download, not open"
 echo ""
+
 echo "${_colors_bold}Finder${_colors_reset}"
 echo "	- Set the sidebar favorites"
 echo "	- Clean dock"
-read -p "Would you like to try to automaticaly open those ? [y/n]"  -n 1 -r
 echo ""
+
+echo "${_colors_bold}VSCode${_colors_reset}"
+echo "	- Login and sync"
+read -p "Would you like to try to automaticaly open those ? [y/n]" -n 1 -r
+echo ""
+
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    open "x-apple.systempreferences:com.apple.preference.keyboard" || echo "Failed to open Preferences"
-    open "Applications/RayRaycast.app" || echo "Failed to open Raycast.app."
-    open "/Applications/Visual\ Studio\ Code.app" || echo "Failed to open VSCode"
-    open "/Applications/Firefox.app"|| echo "Failed to open Firefox"
- else
-  echo "Skipping opening apps"
-  echo ""
+	open "x-apple.systempreferences:com.apple.preference.keyboard" || echo "Failed to open Preferences"
+	open "/Applications/RayRaycast.app" || echo "Failed to open Raycast.app."
+	open "/Applications/Visual\ Studio\ Code.app" || echo "Failed to open VSCode"
+	open "/Applications/Firefox.app" || echo "Failed to open Firefox"
+else
+	echo "Skipping opening apps"
+	echo ""
 fi
 
 echo "${_colors_bold}${_colors_green}All done! Check for errors and reload if needed.${_colors_reset}"

@@ -48,7 +48,6 @@
 
 	tree = log --graph --full-history --all --color --date=short --pretty=format:'%Cred%x09%h %Creset%ad%Cblue%d %Creset %s %C(bold)(%an)%Creset'
 
-
 [advice]
     statusHints = false
     detachedHead = false
@@ -81,7 +80,7 @@
     editor = vim
     preloadindex = true
     abbrev = 12
-	excludesfile = /Users/nicolasbraun/Sources/my_mac_installer/dotfiles/.gitignore
+	excludesfile = /Users/nicolasbraun/.gitignore_global
 
 [credential]
     helper = osxkeychain
