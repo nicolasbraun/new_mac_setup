@@ -39,7 +39,6 @@ fi
 # Brew packages
 
 echo "Install Homebrew Packages from BrewFile, this might take a while"
-brew tap homebrew/bundle
 brew bundle --file=Brewfile || echo "${_colors_red}Could not install all brew packages. Check and relaunch${_colors_reset}"
 echo "Cleaning up brew"
 sudo xcodebuild -license accept
